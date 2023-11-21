@@ -1,0 +1,162 @@
+[project]
+name = "gpt4all-cli"
+dynamic = ["version"]
+description = "CLI for gpt4all"
+license = {text = "GPL-3.0-or-later"}
+readme = "README.md"
+authors = [
+    {name = 'Jens Diemer', email = 'gpt4all-cli@jensdiemer.de'}
+]
+requires-python = ">=3.9,<4"
+dependencies = [
+    "gpt4all",  # https://github.com/nomic-ai/gpt4all
+    "cli-base-utilities>=0.3.0",  # https://github.com/jedie/cli-base-utilities
+    "bx_py_utils",  # https://github.com/boxine/bx_py_utils
+    "click",  # https://github.com/pallets/click/
+    "rich-click",  # https://github.com/ewels/rich-click
+    "rich",  # https://github.com/Textualize/rich
+]
+[project.optional-dependencies]
+dev = [
+    "manageprojects>=0.15.0",  # https://github.com/jedie/manageprojects
+    "pip-tools",  # https://github.com/jazzband/pip-tools/
+    "tox",  # https://github.com/tox-dev/tox
+    "coverage",  # https://github.com/nedbat/coveragepy
+    "autopep8",  # https://github.com/hhatto/autopep8
+    "pyupgrade",  # https://github.com/asottile/pyupgrade
+    "flake8",  # https://github.com/pycqa/flake8
+    "pyflakes",  # https://github.com/PyCQA/pyflakes
+    "codespell",  # https://github.com/codespell-project/codespell
+    "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
+    "safety",  # https://github.com/pyupio/safety
+    "mypy",  # https://github.com/python/mypy
+    "twine",  # https://github.com/pypa/twine
+
+    # https://github.com/akaihola/darker
+    # https://github.com/ikamensh/flynt
+    # https://github.com/pycqa/isort
+    # https://github.com/pygments/pygments
+    "darker[flynt, isort, color]",
+
+    "tomli",  # https://github.com/hukkin/tomli
+    #
+    # tomli only needed for Python <3.11, but see pip bug:
+    # https://github.com/pypa/pip/issues/9644 / https://github.com/jazzband/pip-tools/issues/1866
+    #'tomli;python_version<"3.11"',  # https://github.com/hukkin/tomli
+]
+
+[project.urls]
+Documentation = "https://github.com/jedie/gpt4all_cli"
+Source = "https://github.com/jedie/gpt4all_cli"
+
+[project.scripts]
+gpt4all_cli_app = "gpt4all_cli.__main__:main"
+gpt4all_cli_dev = "gpt4all_cli.cli.dev:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm>=7.1"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gpt4all_cli*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "gpt4all_cli.__version__"}
+
+
+[tool.darker]
+src = ['.']
+revision = "origin/main..."
+line_length = 119
+verbose = true
+color = true
+skip_string_normalization = true
+diff = false
+check = false
+stdout = false
+isort = true
+flynt = true
+lint = [
+    "flake8",
+]
+log_level = "INFO"
+
+
+[tool.isort]
+# https://pycqa.github.io/isort/docs/configuration/config_files/#pyprojecttoml-preferred-format
+atomic=true
+profile='black'
+skip_glob=['.*', '*/htmlcov/*']
+known_first_party=['gpt4all_cli']
+line_length=119
+lines_after_imports=2
+
+
+[tool.coverage.run]
+branch = true
+parallel = true
+concurrency = ["multiprocessing"]
+source = ['.']
+command_line = '-m unittest --verbose --locals --buffer'
+
+[tool.coverage.report]
+omit = ['.*', '*/tests/*']
+skip_empty = true
+fail_under = 30
+show_missing = true
+exclude_lines = [
+    'if self.debug:',
+    'pragma: no cover',
+    'raise NotImplementedError',
+    'if __name__ == .__main__.:',
+]
+
+
+[tool.tox]  # https://tox.wiki/en/latest/config.html#pyproject-toml
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist = py{312,311,310,39}
+skip_missing_interpreters = True
+
+[testenv]
+passenv = *
+skip_install = true
+commands_pre =
+    pip install -U pip-tools
+    pip-sync requirements.dev.txt
+commands =
+    {envpython} -m coverage run --context='{envname}'
+    {envpython} -m coverage combine --append
+    {envpython} -m coverage xml
+    {envpython} -m coverage report
+"""
+
+
+[tool.mypy]
+warn_unused_configs = true
+ignore_missing_imports = true
+allow_redefinition = true  # https://github.com/python/mypy/issues/7165
+show_error_codes = true
+plugins = []
+exclude = ['.venv', 'tests']
+
+
+[manageprojects] # https://github.com/jedie/manageprojects
+initial_revision = "3383cb0"
+initial_date = 2023-11-09T20:14:05+01:00
+cookiecutter_template = "https://github.com/jedie/cookiecutter_templates/"
+cookiecutter_directory = "piptools-python"
+
+[manageprojects.cookiecutter_context.cookiecutter]
+full_name = "Jens Diemer"
+github_username = "jedie"
+author_email = "gpt4all-cli@jensdiemer.de"
+package_name = "gpt4all_cli"
+package_version = "0.0.1"
+package_description = "CLI for gpt4all"
+package_url = "https://github.com/jedie/gpt4all_cli"
+issues_url = "https://github.com/jedie/gpt4all_cli/issues"
+license = "GPL-3.0-or-later"
+_template = "https://github.com/jedie/cookiecutter_templates/"
