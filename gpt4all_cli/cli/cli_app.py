@@ -1,24 +1,23 @@
 """
     CLI for usage
 """
-import multiprocessing
-import time
-
-from gpt4all import GPT4All
 import logging
+import multiprocessing
 import sys
 from pathlib import Path
 
 import rich_click as click
 from bx_py_utils.path import assert_is_file
+from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
+from gpt4all import GPT4All
 from rich import print  # noqa
 from rich.console import Console
-from rich.pretty import Pretty
 from rich.table import Table
 from rich_click import RichGroup
 
 import gpt4all_cli
-from gpt4all_cli import constants, __version__
+from gpt4all_cli import __version__, constants
+from gpt4all_cli.gpt import GptChat
 
 
 logger = logging.getLogger(__name__)
@@ -73,10 +72,10 @@ cli.add_command(version)
 
 @click.command()
 def list_models():
-    table = Table(title="Star Wars Movies")
+    table = Table(title='GPT4All Models')
     console = Console()
     skip_keys = {'order', 'url', 'md5sum', 'name'}
-    with console.status("Fetch..."):
+    with console.status('Fetch...'):
         models = GPT4All.list_models()
         keys = None
         for model in models:
@@ -94,60 +93,36 @@ cli.add_command(list_models)
 
 
 @click.command(context_settings={"ignore_unknown_options": True})
+@click.argument('prompt', nargs=-1)
 @click.option(
     "--model",
+    # default='wizardlm-13b-v1.2.Q4_0.gguf',  # Big and slow on CPU ;)
     # default='mistral-7b-openorca.Q4_0.gguf',
     default='orca-mini-3b-gguf2-q4_0.gguf',
     # default='rift-coder-v0-7b-q4_0.gguf',
 )
 @click.option("--max-tokens", type=click.IntRange(1, 9999), default=100)
-@click.option("--n_batch", type=click.IntRange(1, 9999), default=multiprocessing.cpu_count())
-@click.argument('prompt', nargs=-1)
-def ask(prompt, model, max_tokens, n_batch):
+@click.option("--cpu-count", type=click.IntRange(1, 9999), default=multiprocessing.cpu_count())
+@click.option("--temperature", type=click.FloatRange(0, 2), default=0)
+@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
+def chat(prompt, model, max_tokens, cpu_count, temperature, verbosity: int):
     """
-    Ask GPT4all something...
-
-    e.g.:
-        ./cli.py ask What is Python?
+    Chat with GPT4all
 
     https://github.com/nomic-ai/gpt4all/tree/main/gpt4all-bindings/python
     """
-    prompt = ' '.join(prompt)
-    if not prompt:
-        print('Please aks me something, e.g.:')
-        print('./cli.py ask What is Python?')
-        return
-
-    console = Console()
-    console.print('\n')
-
-    console.print(f'Use {model=}...')
-    model = GPT4All(model, verbose=True)
-
-    kwargs = dict(
-        max_tokens=max_tokens, n_batch=n_batch,
+    setup_logging(verbosity=verbosity)
+    chat = GptChat(
+        initial_prompt=' '.join(prompt),
+        model_name=model,
+        max_tokens=max_tokens,
+        cpu_count=cpu_count,
+        temperature=temperature,
     )
-
-    console.print(Pretty(kwargs))
-
-    console.rule(f'[bold red]{prompt}')
-    start_time = time.monotonic()
-
-    generator = model.generate(prompt, streaming=True, **kwargs)
-
-    try:
-        for token in generator:
-            console.print(token, end='')
-    except KeyboardInterrupt:
-        console.print('...')
-
-    duration = time.monotonic() - start_time
-    console.print()
-    console.rule(f'Duration: {duration:.1f}sec')
-    console.print()
+    chat.loop()
 
 
-cli.add_command(ask)
+cli.add_command(chat)
 
 
 def main():
