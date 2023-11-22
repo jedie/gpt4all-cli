@@ -8,12 +8,12 @@
 
 CLI for gpt4all
 
-Start hacking: Just clone the sources and `ask`
+Start hacking: Just clone the sources and `chat`
 
 e.g.:
 
 ```commandline
 ~$ git clone https://github.com/jedie/gpt4all-cli.git
 ~$ cd gpt4all-cli
-~/gpt4all-cli$ ./cli.py ask What is Python?
+~/gpt4all-cli$ ./cli.py chat What is Python?
 ```
