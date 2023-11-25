@@ -16,7 +16,7 @@ from rich.table import Table
 from rich_click import RichGroup
 
 import gpt4all_cli
-from gpt4all_cli import __version__, constants
+from gpt4all_cli import __version__, constants, web_ui
 from gpt4all_cli.gpt import GptChat
 
 
@@ -123,6 +123,20 @@ def chat(prompt, model, max_tokens, cpu_count, temperature, verbosity: int):
 
 
 cli.add_command(chat)
+
+
+@click.command()
+@click.option('-p', '--port', default=8080)
+@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
+def web(port: int,  verbosity: int):
+    """
+    Start Lona Web UI
+    """
+    setup_logging(verbosity=verbosity)
+    web_ui.app.run(port=port, parse_command_line=False, live_reload=True)
+
+
+cli.add_command(web)
 
 
 def main():

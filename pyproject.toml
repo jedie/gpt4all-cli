@@ -10,6 +10,8 @@ authors = [
 requires-python = ">=3.9,<4"
 dependencies = [
     "gpt4all",  # https://github.com/nomic-ai/gpt4all
+    "lona",  # https://github.com/lona-web-org/lona
+    "lona-picocss",  # https://github.com/lona-web-org/lona-picocss
     "cli-base-utilities>=0.3.0",  # https://github.com/jedie/cli-base-utilities
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
     "click",  # https://github.com/pallets/click/
