@@ -99,8 +99,8 @@ cli.add_command(list_models)
 @click.option(
     "--model",
     # default='wizardlm-13b-v1.2.Q4_0.gguf',  # Big and slow on CPU ;)
-    # default='mistral-7b-openorca.Q4_0.gguf',
-    default='orca-mini-3b-gguf2-q4_0.gguf',
+    default='mistral-7b-openorca.Q4_0.gguf',
+    # default='orca-mini-3b-gguf2-q4_0.gguf',
     # default='rift-coder-v0-7b-q4_0.gguf',
 )
 @click.option("--max-tokens", type=click.IntRange(1, 9999), default=100)

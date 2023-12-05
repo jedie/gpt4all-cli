@@ -423,8 +423,8 @@ class LobbyView(View):
             return self.html
 
         self.gpt_model_name = Select2(
-            Option2('wizardlm-13b-v1.2.Q4_0.gguf', value='wizardlm-13b-v1.2.Q4_0.gguf', selected=True),
-            Option2('orca-mini-3b-gguf2-q4_0.gguf', value='orca-mini-3b-gguf2-q4_0.gguf'),
+            Option2('orca-mini-3b-gguf2-q4_0.gguf', value='orca-mini-3b-gguf2-q4_0.gguf', selected=True),
+            Option2('wizardlm-13b-v1.2.Q4_0.gguf', value='wizardlm-13b-v1.2.Q4_0.gguf'),
             Option2('mistral-7b-openorca.Q4_0.gguf', value='mistral-7b-openorca.Q4_0.gguf'),
         )
         self.room_name = TextInput(placeholder='Room Name', value='test')
