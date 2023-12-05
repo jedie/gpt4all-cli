@@ -9,14 +9,16 @@ from pathlib import Path
 import rich_click as click
 from bx_py_utils.path import assert_is_file
 from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE, setup_logging
+from cli_base.cli_tools.version_info import print_version
 from gpt4all import GPT4All
 from rich import print  # noqa
 from rich.console import Console
 from rich.table import Table
+from rich.traceback import install as rich_traceback_install
 from rich_click import RichGroup
 
 import gpt4all_cli
-from gpt4all_cli import __version__, constants, web_ui
+from gpt4all_cli import constants, web_ui
 from gpt4all_cli.gpt import GptChat
 
 
@@ -140,7 +142,15 @@ cli.add_command(web)
 
 
 def main():
-    print(f'[bold][green]gpt4all_cli[/green] v[cyan]{__version__}')
+    print_version(gpt4all_cli)
+
+    console = Console()
+    rich_traceback_install(
+        width=console.size.width,  # full terminal width
+        show_locals=True,
+        suppress=[click],
+        max_frames=2,
+    )
 
     # Execute Click CLI:
     cli.name = './cli.py'

@@ -167,8 +167,6 @@ class ChatView(View):
         if isinstance(chat_message, list):
             return self.show_message(chat_message)
 
-        room_data: RoomData = self.room_data
-        room_state = room_data.state
         message_type: MessageTypeEnum = chat_message.type
 
         if message_type == MessageTypeEnum.WAIT:

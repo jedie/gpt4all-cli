@@ -130,9 +130,6 @@ commands_pre =
     pip-sync requirements.dev.txt
 commands =
     {envpython} -m coverage run --context='{envname}'
-    {envpython} -m coverage combine --append
-    {envpython} -m coverage xml
-    {envpython} -m coverage report
 """
 
 
@@ -162,3 +159,6 @@ package_url = "https://github.com/jedie/gpt4all_cli"
 issues_url = "https://github.com/jedie/gpt4all_cli/issues"
 license = "GPL-3.0-or-later"
 _template = "https://github.com/jedie/cookiecutter_templates/"
+applied_migrations = [
+    "84dc9a4", # 2023-12-02T01:03:10+01:00
+]
