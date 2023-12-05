@@ -4,7 +4,9 @@
 import logging
 import multiprocessing
 import sys
+import webbrowser
 from pathlib import Path
+from threading import Timer
 
 import rich_click as click
 from bx_py_utils.path import assert_is_file
@@ -99,8 +101,8 @@ cli.add_command(list_models)
 @click.option(
     "--model",
     # default='wizardlm-13b-v1.2.Q4_0.gguf',  # Big and slow on CPU ;)
-    # default='mistral-7b-openorca.Q4_0.gguf',
-    default='orca-mini-3b-gguf2-q4_0.gguf',
+    default='mistral-7b-openorca.Q4_0.gguf',
+    # default='orca-mini-3b-gguf2-q4_0.gguf',
     # default='rift-coder-v0-7b-q4_0.gguf',
 )
 @click.option("--max-tokens", type=click.IntRange(1, 9999), default=100)
@@ -128,14 +130,27 @@ cli.add_command(chat)
 
 
 @click.command()
+@click.option('-h', '--host', default='localhost')
 @click.option('-p', '--port', default=8080)
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def web(port: int,  verbosity: int):
+def web(host: str, port: int, verbosity: int):
     """
     Start Lona Web UI
     """
     setup_logging(verbosity=verbosity)
-    web_ui.app.run(port=port, parse_command_line=False, live_reload=True)
+
+    Timer(
+        interval=1,
+        function=webbrowser.open_new_tab,
+        kwargs=dict(url=f'http://{host}:{port}'),
+    ).start()
+
+    web_ui.app.run(
+        host=host,
+        port=port,
+        parse_command_line=False,
+        live_reload=True,
+    )
 
 
 cli.add_command(web)
