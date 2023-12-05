@@ -8,7 +8,7 @@
 
 CLI for gpt4all
 
-Start hacking: Just clone the sources and `chat`
+Start hacking: Just clone the sources and play...
 
 e.g.:
 
@@ -16,4 +16,11 @@ e.g.:
 ~$ git clone https://github.com/jedie/gpt4all-cli.git
 ~$ cd gpt4all-cli
 ~/gpt4all-cli$ ./cli.py chat What is Python?
+```
+
+
+or start a chat via Lona - https://github.com/lona-web-org/lona
+
+```commandline
+~/gpt4all-cli$ ./cli.py web
 ```
