@@ -4,7 +4,9 @@
 import logging
 import multiprocessing
 import sys
+import webbrowser
 from pathlib import Path
+from threading import Timer
 
 import rich_click as click
 from bx_py_utils.path import assert_is_file
@@ -128,14 +130,27 @@ cli.add_command(chat)
 
 
 @click.command()
+@click.option('-h', '--host', default='localhost')
 @click.option('-p', '--port', default=8080)
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def web(port: int,  verbosity: int):
+def web(host: str, port: int, verbosity: int):
     """
     Start Lona Web UI
     """
     setup_logging(verbosity=verbosity)
-    web_ui.app.run(port=port, parse_command_line=False, live_reload=True)
+
+    Timer(
+        interval=1,
+        function=webbrowser.open_new_tab,
+        kwargs=dict(url=f'http://{host}:{port}'),
+    ).start()
+
+    web_ui.app.run(
+        host=host,
+        port=port,
+        parse_command_line=False,
+        live_reload=True,
+    )
 
 
 cli.add_command(web)
