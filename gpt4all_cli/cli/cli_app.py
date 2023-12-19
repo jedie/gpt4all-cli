@@ -107,7 +107,7 @@ cli.add_command(list_models)
     # default='rift-coder-v0-7b-q4_0.gguf',
 
 )
-@click.option("--max-tokens", type=click.IntRange(1, 9999), default=200)
+@click.option("--max-tokens", type=click.IntRange(1, 9999), default=400)
 @click.option("--cpu-count", type=click.IntRange(1, 9999), default=multiprocessing.cpu_count())
 @click.option("--temperature", type=click.FloatRange(0, 2), default=0.7)
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)

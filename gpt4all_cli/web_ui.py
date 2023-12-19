@@ -68,7 +68,7 @@ class Gpt:
 
         return self
 
-    def generate(self, *, prompt, max_tokens=200):
+    def generate(self, *, prompt, max_tokens=300):
         chat_session = self.room_data.chat_session
         generator = chat_session.generate(prompt=prompt, streaming=True, max_tokens=max_tokens)
         for token in generator:
