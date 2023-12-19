@@ -68,7 +68,7 @@ class Gpt:
 
         return self
 
-    def generate(self, *, prompt, max_tokens=50):
+    def generate(self, *, prompt, max_tokens=200):
         chat_session = self.room_data.chat_session
         generator = chat_session.generate(prompt=prompt, streaming=True, max_tokens=max_tokens)
         for token in generator:
@@ -423,7 +423,8 @@ class LobbyView(View):
             return self.html
 
         self.gpt_model_name = Select2(
-            Option2('orca-mini-3b-gguf2-q4_0.gguf', value='orca-mini-3b-gguf2-q4_0.gguf', selected=True),
+            Option2('em_german_mistral_v01.Q4_0.gguf', value='em_german_mistral_v01.Q4_0.gguf', selected=True),
+            Option2('orca-mini-3b-gguf2-q4_0.gguf', value='orca-mini-3b-gguf2-q4_0.gguf'),
             Option2('wizardlm-13b-v1.2.Q4_0.gguf', value='wizardlm-13b-v1.2.Q4_0.gguf'),
             Option2('mistral-7b-openorca.Q4_0.gguf', value='mistral-7b-openorca.Q4_0.gguf'),
         )
