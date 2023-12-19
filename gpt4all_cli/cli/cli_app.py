@@ -100,14 +100,16 @@ cli.add_command(list_models)
 @click.argument('prompt', nargs=-1)
 @click.option(
     "--model",
+    default='em_german_mistral_v01.Q4_0.gguf',
     # default='wizardlm-13b-v1.2.Q4_0.gguf',  # Big and slow on CPU ;)
-    default='mistral-7b-openorca.Q4_0.gguf',
+    # default='mistral-7b-openorca.Q4_0.gguf',
     # default='orca-mini-3b-gguf2-q4_0.gguf',
     # default='rift-coder-v0-7b-q4_0.gguf',
+
 )
-@click.option("--max-tokens", type=click.IntRange(1, 9999), default=100)
+@click.option("--max-tokens", type=click.IntRange(1, 9999), default=400)
 @click.option("--cpu-count", type=click.IntRange(1, 9999), default=multiprocessing.cpu_count())
-@click.option("--temperature", type=click.FloatRange(0, 2), default=0)
+@click.option("--temperature", type=click.FloatRange(0, 2), default=0.7)
 @click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
 def chat(prompt, model, max_tokens, cpu_count, temperature, verbosity: int):
     """

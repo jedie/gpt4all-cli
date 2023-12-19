@@ -45,8 +45,8 @@ GPT_WRITE_ELLIPSIS = '\N{MIDLINE HORIZONTAL ELLIPSIS}'  # U+22EF
 # GPT_WRITE_ELLIPSIS = '\N{HORIZONTAL ELLIPSIS}'  # U+2026
 
 WELCOME_PROMPT = 'Create a nice, short welcoming message to a new visitor of this chat.'
-WELCOME_MAX_TROKENS = 50
-MAX_TROKENS = 100
+WELCOME_MAX_TOKENS = 50
+MAX_TOKENS = 100
 
 
 class Gpt:
@@ -68,7 +68,7 @@ class Gpt:
 
         return self
 
-    def generate(self, *, prompt, max_tokens=50):
+    def generate(self, *, prompt, max_tokens=300):
         chat_session = self.room_data.chat_session
         generator = chat_session.generate(prompt=prompt, streaming=True, max_tokens=max_tokens)
         for token in generator:
@@ -211,7 +211,7 @@ class ChatView(View):
     def send_message(self, type, text):
         if type == 'join':
             with Gpt(channel=self.channel, room_data=self.room_data) as gpt:
-                gpt.generate(prompt=WELCOME_PROMPT, max_tokens=WELCOME_MAX_TROKENS)
+                gpt.generate(prompt=WELCOME_PROMPT, max_tokens=WELCOME_MAX_TOKENS)
             return
 
         message = [
@@ -235,7 +235,7 @@ class ChatView(View):
 
         if type == 'message':
             with Gpt(channel=self.channel, room_data=self.room_data) as gpt:
-                gpt.generate(prompt=text, max_tokens=MAX_TROKENS)
+                gpt.generate(prompt=text, max_tokens=MAX_TOKENS)
 
     def handle_send_button_click(self, input_event):
         message = self.message_text_area.value.strip()
@@ -423,7 +423,8 @@ class LobbyView(View):
             return self.html
 
         self.gpt_model_name = Select2(
-            Option2('orca-mini-3b-gguf2-q4_0.gguf', value='orca-mini-3b-gguf2-q4_0.gguf', selected=True),
+            Option2('em_german_mistral_v01.Q4_0.gguf', value='em_german_mistral_v01.Q4_0.gguf', selected=True),
+            Option2('orca-mini-3b-gguf2-q4_0.gguf', value='orca-mini-3b-gguf2-q4_0.gguf'),
             Option2('wizardlm-13b-v1.2.Q4_0.gguf', value='wizardlm-13b-v1.2.Q4_0.gguf'),
             Option2('mistral-7b-openorca.Q4_0.gguf', value='mistral-7b-openorca.Q4_0.gguf'),
         )
